@@ -1,0 +1,26 @@
+<mat-select disableOptionCentering [(ngModel)]="value" [multiple]="true">
+  <!-- Search input -->
+  <input type="text" class="multiselect-search" placeholder="Search" matInput [formControl]="searchControl">
+
+  <!-- Selected options chips display -->
+  <mat-select-trigger class="multiselect-chips">
+    <mat-chip-list>
+      <mat-chip disableRipple *ngFor="let selected of value" [selectable]="true" [removable]="true" (removed)="removeOption(selected)">
+        {{ selected.label }}
+        <i class="multiselect-chip-remove" matChipRemove matRipple></i>
+      </mat-chip>
+    </mat-chip-list>
+  </mat-select-trigger>
+
+  <!-- All options -->
+  <ng-container>
+    <div class="multiselect-selectall mat-option">
+      <mat-checkbox [(ngModel)]="isAllSelected" (change)="toggleSelection($event.checked)">Select/Deselect all</mat-checkbox>
+    </div>
+    <mat-option class="multiselect-option" [class.hidden]="option.isHidden" *ngFor="let option of filteredOptions | async" [value]="option">
+      {{ option.label }}
+    </mat-option>
+  </ng-container>
+</mat-select>
+<!-- Clear selection link -->
+<span *ngIf="value && value.length > 0" (click)="clearSelection($event)" class="multiselect-clear-selection">Clear selection</span>
