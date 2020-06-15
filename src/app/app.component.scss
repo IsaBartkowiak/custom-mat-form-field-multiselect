@@ -1,8 +1,22 @@
 .app {
   &-container {
-    padding: 50px 100px;
+    padding: 50px 10%;
+
+    mat-form-field {
+      width: 100%;
+    }
   }
+
   &-field {
     max-width: 300px;
   }
+
+  &-value-preview {
+    &-title {
+      margin-top: 0;
+      margin-bottom: 5px;
+      font-size: 1em;
+    }
+  }
+
 }

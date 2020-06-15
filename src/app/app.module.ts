@@ -5,7 +5,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatFormFieldModule } from '@angular/material';
+import { MatFormFieldModule, MatChipsModule, MatButtonModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -16,10 +16,13 @@ import { MatFormFieldModule } from '@angular/material';
     BrowserAnimationsModule,
     CustomMatMultiselectModule,
     MatFormFieldModule,
+    MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
+    MatChipsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+

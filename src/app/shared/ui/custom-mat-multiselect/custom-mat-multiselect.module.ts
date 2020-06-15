@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSelectModule, MatChipsModule, MatCheckboxModule, MatInputModule } from '@angular/material';
+import { MatSelectModule, MatChipsModule, MatInputModule, MatCheckboxModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomMatMultiselectComponent } from './multiselect/custom-mat-multiselect.component';
 
@@ -13,9 +13,9 @@ import { CustomMatMultiselectComponent } from './multiselect/custom-mat-multisel
     MatSelectModule,
     MatChipsModule,
     FormsModule,
+    ReactiveFormsModule,
     MatCheckboxModule,
     MatInputModule,
-    ReactiveFormsModule,
   ],
   exports: [
     CustomMatMultiselectComponent,

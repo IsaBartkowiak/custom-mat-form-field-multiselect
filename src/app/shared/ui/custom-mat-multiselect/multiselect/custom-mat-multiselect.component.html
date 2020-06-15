@@ -1,11 +1,21 @@
-<mat-select disableOptionCentering [(ngModel)]="value" [multiple]="true">
+<mat-select
+  disableOptionCentering
+  [placeholder]="placeholder"
+  [formControl]="valueControl"
+  [multiple]="true"
+  (opened)="focused = true; searchElement.nativeElement.focus()"
+  (closed)="focused= false"
+  #selectElement>
+
   <!-- Search input -->
-  <input type="text" class="multiselect-search" placeholder="Search" matInput [formControl]="searchControl">
+  <input type="text" *ngIf="search" class="multiselect-search" placeholder="Search" matInput
+    [formControl]="searchControl" #searchElement>
 
   <!-- Selected options chips display -->
-  <mat-select-trigger class="multiselect-chips">
+  <mat-select-trigger>
     <mat-chip-list>
-      <mat-chip disableRipple *ngFor="let selected of value" [selectable]="true" [removable]="true" (removed)="removeOption(selected)">
+      <mat-chip disableRipple *ngFor="let selected of valueControl.value" [selectable]="true" [removable]="true"
+        (removed)="removeOption(selected)">
         {{ selected.label }}
         <i class="multiselect-chip-remove" matChipRemove matRipple></i>
       </mat-chip>
@@ -13,14 +23,16 @@
   </mat-select-trigger>
 
   <!-- All options -->
-  <ng-container>
-    <div class="multiselect-selectall mat-option">
-      <mat-checkbox [(ngModel)]="isAllSelected" (change)="toggleSelection($event.checked)">Select/Deselect all</mat-checkbox>
-    </div>
-    <mat-option class="multiselect-option" [class.hidden]="option.isHidden" *ngFor="let option of filteredOptions | async" [value]="option">
-      {{ option.label }}
-    </mat-option>
-  </ng-container>
+  <div matRipple class="multiselect-selectall mat-option" *ngIf="selectAll">
+    <mat-checkbox color="primary" [(ngModel)]="isAllSelected" (change)="toggleSelection($event.checked)">
+      {{ selectAllLabel }}
+    </mat-checkbox>
+  </div>
+  <mat-option class="multiselect-option" [class.hidden]="option.isHidden" *ngFor="let option of filteredOptions | async"
+    [value]="option">
+    {{ option.label }}
+  </mat-option>
 </mat-select>
 <!-- Clear selection link -->
-<span *ngIf="value && value.length > 0" (click)="clearSelection($event)" class="multiselect-clear-selection">Clear selection</span>
+<span *ngIf="!disabled && valueControl.value?.length > 0" (click)="clearSelection($event)" class="multiselect-clear-selection">{{ clearSelectionLabel }}</span>
+

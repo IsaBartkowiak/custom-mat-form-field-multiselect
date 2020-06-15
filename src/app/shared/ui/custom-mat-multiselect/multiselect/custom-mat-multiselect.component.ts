@@ -1,52 +1,140 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Optional, Self, OnDestroy, HostBinding, ViewChild, ElementRef } from '@angular/core';
+import { FormControl, ControlValueAccessor, NgControl } from '@angular/forms';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime, map, startWith, tap, takeWhile } from 'rxjs/operators';
+import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControlBase } from '../shared/mat-form-control-base';
 import { Option } from '../shared/option.model';
-import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { debounceTime, map, startWith } from 'rxjs/operators';
-
 @Component({
   selector: 'app-custom-mat-multiselect',
   templateUrl: './custom-mat-multiselect.component.html',
   styleUrls: ['./custom-mat-multiselect.component.scss'],
+  providers: [
+    { provide: MatFormFieldControl, useExisting: CustomMatMultiselectComponent },
+  ],
 })
-export class CustomMatMultiselectComponent implements OnInit {
+export class CustomMatMultiselectComponent extends MatFormFieldControlBase
+  implements MatFormFieldControl<Option[]>, ControlValueAccessor, OnInit, OnDestroy {
 
-  @Input() options: Option[];
   @Input() value: Option[] | null;
+  @Input() disabled: boolean;
+  @Input() options: Option[];
+  @Input() selectAll: boolean;
+  @Input() search: boolean;
+  @Input() selectAllLabel: string;
+  @Input() clearSelectionLabel: string;
 
   public searchControl: FormControl;
+  public valueControl: FormControl;
   public isAllSelected: boolean;
   public filteredOptions: Observable<Option[]>;
+  public allOptions: Option[];
 
-  constructor() { }
+  public onChange: (options: Option[]) => void;
+  public onTouched: () => void;
+
+  public stateChanges = new Subject<void>();
+
+  private isComponentActive = true;
+
+  @ViewChild('selectElement', { static: false }) selectElement: any;
+  @ViewChild('searchElement', { static: false }) searchElement: any;
+
+  constructor(@Optional() @Self() public ngControl: NgControl) {
+    super();
+    if (this.ngControl != null) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
 
   ngOnInit(): void {
+    this.valueControl = new FormControl();
     this.searchControl = new FormControl();
+    this.allOptions = JSON.parse(JSON.stringify(this.options));
     this.filteredOptions = this.searchControl.valueChanges.pipe(
+      takeWhile(() => this.isComponentActive),
       startWith(''),
       debounceTime(200),
       map(searchQuery => this.filterOptions(searchQuery)),
     );
+    this.valueControl.valueChanges.pipe(
+      takeWhile(() => this.isComponentActive),
+      map(options => options.map(option => {
+        return { label: option.label, id: option.id };
+      })),
+      tap(options => {
+        this.stateChanges.next();
+        if (this.ngControl) {
+          const opt = options.filter(o => options.map(v => v.id).includes(o.id));
+          this.onChange(opt);
+          this.onTouched();
+        }
+      }),
+    ).subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.isComponentActive = false;
   }
 
   public filterOptions(searchQuery: string): Option[] {
-    return this.options.map(option => {
+    return this.allOptions.map(option => {
       option.isHidden = !option.label.toLowerCase().includes(searchQuery.toLowerCase());
       return option;
     });
   }
 
   public removeOption(optionToRemove: Option): void {
-    this.value = this.value.filter(option => optionToRemove.id !== option.id);
+    this.valueControl.setValue(this.valueControl.value.filter(option => optionToRemove.id !== option.id));
+    this.isAllSelected = false;
   }
 
-  public clearSelection(): void {
-    this.value = null;
+  public clearSelection(event: MouseEvent): void {
+    event.stopPropagation();
+    this.valueControl.setValue([]);
     this.isAllSelected = false;
   }
 
   public toggleSelection(isAllSelected: boolean): void {
-    this.value = isAllSelected ? this.options : null;
+    this.valueControl.setValue(isAllSelected ? this.options : []);
+  }
+
+  // Implements ControlValueAccessor
+  public writeValue(options: Option[]): void {
+    if (options) {
+      const opt = this.allOptions.filter(o => options.map(v => v.id).includes(o.id));
+      this.valueControl.setValue(opt);
+    }
+  }
+
+  public registerOnChange(fn: (options: Option[]) => void): void {
+    this.onChange = fn;
+  }
+
+  public registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  public setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  // Implements MatFormFieldControl
+  get empty(): boolean {
+    return !this.valueControl.value || this.valueControl.value.length === 0;
+  }
+
+  get errorState(): boolean {
+    return this.ngControl && this.ngControl.errors !== null && !!this.ngControl.touched;
+  }
+
+  @HostBinding('class.floating')
+  get shouldLabelFloat(): boolean {
+    return this.focused || !this.empty;
+  }
+
+  public onContainerClick(): void {
+    this.selectElement.open();
   }
 
 }

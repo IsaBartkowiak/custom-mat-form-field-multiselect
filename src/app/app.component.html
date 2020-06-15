@@ -1,6 +1,96 @@
 <div class="app-container">
-  <h1>test</h1>
-  <br><br>
-  <mat-label>Cars list</mat-label>
-  <app-custom-mat-multiselect class="app-field" [options]="mockCarsOption"></app-custom-mat-multiselect>
+  <h1>Custom MatFormField multiselect</h1>
+
+  <h2>Appearance variants</h2>
+
+  <div class="row">
+    <mat-form-field class="col-md-4 col-sm-12" appearance="outline">
+      <mat-label>Outline</mat-label>
+      <app-custom-mat-multiselect required [options]="mockCarsOptions" [search]="true" [selectAll]="true"
+        [selectAllLabel]="'Select / Deselect all'" [clearSelectionLabel]="'Clear selection'">
+      </app-custom-mat-multiselect>
+    </mat-form-field>
+
+    <mat-form-field class="col-md-4 col-sm-12" appearance="fill">
+      <mat-label>Fill</mat-label>
+      <app-custom-mat-multiselect required [options]="mockCarsOptions" [search]="true" [selectAll]="true"
+        [selectAllLabel]="'Select / Deselect all'" [clearSelectionLabel]="'Clear selection'">
+      </app-custom-mat-multiselect>
+    </mat-form-field>
+
+    <mat-form-field class="col-md-4 col-sm-12" appearance="standard">
+      <mat-label>Standard</mat-label>
+      <app-custom-mat-multiselect required [options]="mockCarsOptions" [search]="true" [selectAll]="true"
+        [selectAllLabel]="'Select / Deselect all'" [clearSelectionLabel]="'Clear selection'">
+      </app-custom-mat-multiselect>
+    </mat-form-field>
+  </div>
+
+  <h2>Usage in template driven forms</h2>
+
+  <div class="row">
+    <div class="col-md-4 col-sm-12">
+      <mat-form-field appearance="fill">
+        <mat-label>Cars</mat-label>
+        <app-custom-mat-multiselect
+          #carInput="ngModel"
+          required
+          [(ngModel)]="cars"
+          [options]="mockCarsOptions"
+          [search]="true"
+          [selectAll]="true"
+          [selectAllLabel]="'Select / Deselect all'"
+          [clearSelectionLabel]="'Clear selection'">
+        </app-custom-mat-multiselect>
+        <mat-error *ngIf="carInput.invalid">This field is required</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-4 col-sm-12 app-value-preview">
+      <h3 class="app-value-preview-title">Cars value</h3>
+      <mat-chip-list>
+        <mat-chip *ngFor="let car of cars">
+          {{ car.label }}
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+
+    <div class="col-md-4 col-sm-12">
+      <button mat-raised-button (click)="changeCarsValue()" color="primary">Change NgModel Value</button>
+    </div>
+  </div>
+
+  <h2>Usage in reactive forms</h2>
+
+  <div class="row">
+    <div class="col-md-4 col-sm-12">
+      <mat-form-field appearance="outline">
+        <mat-label>Cars</mat-label>
+        <app-custom-mat-multiselect
+          required
+          [formControl]="form.controls.cars"
+          [options]="mockCarsOptions"
+          [search]="true"
+          [selectAll]="true"
+          [selectAllLabel]="'Select / Deselect all'"
+          [clearSelectionLabel]="'Clear selection'">
+        </app-custom-mat-multiselect>
+        <mat-error *ngIf="form.controls.cars.hasError('required')">This field is required</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-4 col-sm-12 app-value-preview">
+      <h3 class="app-value-preview-title">Cars form control value</h3>
+      <mat-chip-list>
+        <mat-chip *ngFor="let car of form.controls.cars.value">
+          {{ car.label }}
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+
+    <div class="col-md-4 col-sm-12">
+      <button mat-raised-button (click)="changeFormControlValue()" color="primary">Change FormControl Value</button>
+    </div>
+  </div>
+
 </div>
