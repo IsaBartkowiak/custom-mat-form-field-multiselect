@@ -1,6 +1,6 @@
 .app {
   &-container {
-    padding: 50px 10%;
+    padding: 20px 5%;
 
     mat-form-field {
       width: 100%;
@@ -16,6 +16,13 @@
       margin-top: 0;
       margin-bottom: 5px;
       font-size: 1em;
+    }
+  }
+
+  &-change-value {
+    margin-top: 20px;
+    @media (max-width: 800px) {
+      text-align:center;
     }
   }
 
