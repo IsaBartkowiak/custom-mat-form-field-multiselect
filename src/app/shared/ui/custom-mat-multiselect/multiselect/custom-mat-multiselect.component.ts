@@ -38,7 +38,7 @@ export class CustomMatMultiselectComponent extends MatFormFieldControlBase
   private isComponentActive = true;
 
   @ViewChild('selectElement', { static: false }) selectElement: MatSelect;
-  @ViewChild('searchElement', { static: false }) searchElement: any;
+  @ViewChild('searchElement', { static: false }) searchElement: HTMLInputElement;
 
   constructor(@Optional() @Self() public ngControl: NgControl) {
     super();
