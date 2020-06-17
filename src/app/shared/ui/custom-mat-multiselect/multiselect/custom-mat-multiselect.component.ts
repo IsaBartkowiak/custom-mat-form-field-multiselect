@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Optional, Self, OnDestroy, HostBinding, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Optional, Self, OnDestroy, HostBinding, ViewChild } from '@angular/core';
 import { FormControl, ControlValueAccessor, NgControl } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, map, startWith, tap, takeWhile } from 'rxjs/operators';
-import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl, MatSelect } from '@angular/material';
 import { MatFormFieldControlBase } from '../shared/mat-form-control-base';
 import { Option } from '../shared/option.model';
 @Component({
@@ -37,7 +37,7 @@ export class CustomMatMultiselectComponent extends MatFormFieldControlBase
 
   private isComponentActive = true;
 
-  @ViewChild('selectElement', { static: false }) selectElement: any;
+  @ViewChild('selectElement', { static: false }) selectElement: MatSelect;
   @ViewChild('searchElement', { static: false }) searchElement: any;
 
   constructor(@Optional() @Self() public ngControl: NgControl) {
