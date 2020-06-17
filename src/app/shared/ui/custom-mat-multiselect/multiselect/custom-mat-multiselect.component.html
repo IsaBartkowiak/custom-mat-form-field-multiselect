@@ -23,7 +23,7 @@
   </mat-select-trigger>
 
   <!-- All options -->
-  <div matRipple class="multiselect-selectall mat-option" *ngIf="selectAll">
+  <div matRipple class="multiselect-selectall mat-option" *ngIf="selectAll && !searchControl.value">
     <mat-checkbox color="primary" [(ngModel)]="isAllSelected" (change)="toggleSelection($event.checked)">
       {{ selectAllLabel }}
     </mat-checkbox>
