@@ -65,8 +65,8 @@ export class CustomMatMultiselectComponent extends MatFormFieldControlBase
       tap(options => {
         this.stateChanges.next();
         if (this.ngControl) {
-          const opt = options.filter(o => options.map(v => v.id).includes(o.id));
-          this.onChange(opt);
+          const updatedOptions = options.filter(o => options.map(v => v.id).includes(o.id));
+          this.onChange(updatedOptions);
           this.onTouched();
         }
       }),
@@ -102,8 +102,8 @@ export class CustomMatMultiselectComponent extends MatFormFieldControlBase
   // Implements ControlValueAccessor
   public writeValue(options: Option[]): void {
     if (options) {
-      const opt = this.allOptions.filter(o => options.map(v => v.id).includes(o.id));
-      this.valueControl.setValue(opt);
+      const updatedOptions = this.allOptions.filter(o => options.map(v => v.id).includes(o.id));
+      this.valueControl.setValue(updatedOptions);
     }
   }
 
