@@ -96,7 +96,7 @@ export class CustomMatMultiselectComponent extends MatFormFieldControlBase
   }
 
   public toggleSelection(isAllSelected: boolean): void {
-    this.valueControl.setValue(isAllSelected ? this.options : []);
+    this.valueControl.setValue(isAllSelected ? this.allOptions : []);
   }
 
   // Implements ControlValueAccessor
